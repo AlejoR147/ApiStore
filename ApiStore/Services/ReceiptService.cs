@@ -9,6 +9,7 @@ public interface IReceiptService
     public IEnumerable<Receipt> GetAll();
     public Receipt Get(int id);
     public Receipt Create(ReceiptRequestDTO request);
+    public Receipt Close(int id);
 }
 public class ReceiptService : IReceiptService
 {
@@ -38,5 +39,12 @@ public class ReceiptService : IReceiptService
         };
         _receiptRepository.Save(newReceipt);
         return newReceipt;
+    }
+
+    public Receipt Close(int id)
+    {
+        var receipt = _receiptRepository.Get(id);
+        receipt.Estado = false;
+        return _receiptRepository.Update(receipt);
     }
 }

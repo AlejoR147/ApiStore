@@ -10,6 +10,7 @@ public interface IReceiptRepository
     public IEnumerable<Receipt> GetAll();
     public Receipt? Get(int id);
     public void Save(Receipt receipt);
+    public Receipt Update(Receipt receipt);
 }
 public class ReceiptRepository : IReceiptRepository
 {
@@ -30,11 +31,14 @@ public class ReceiptRepository : IReceiptRepository
         return readerCsv.GetRecords<Receipt>().ToList();
     }
 
-    public Receipt? Get(int id)
+    public Receipt Get(int id)
     {
-        var clients = GetAll();
-
-        return clients.FirstOrDefault(r => r.Id == id);
+        var client = GetAll().FirstOrDefault(r => r.Id == id);
+        if (client is null)
+        {
+            return null;
+        }
+        return client;
     }
 
     public void Save(Receipt receipt)
@@ -60,5 +64,16 @@ public class ReceiptRepository : IReceiptRepository
         {
             writerCsv.WriteRecords(receipts);
         }
+    }
+
+    public Receipt Update(Receipt receipt)
+    {
+        var receipts = GetAll();
+
+        receipts = receipts.Select(r => r.Id == receipt.Id ? receipt : r);
+ 
+        SaveClean(receipts);
+
+        return receipt;
     }
 }
