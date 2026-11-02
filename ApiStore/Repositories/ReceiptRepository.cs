@@ -34,7 +34,7 @@ public class ReceiptRepository : IReceiptRepository
     {
         var clients = GetAll();
 
-        return clients.FirstOrDefault(); //configurar
+        return clients.FirstOrDefault(r => r.Id == id);
     }
 
     public void Save(Receipt receipt)

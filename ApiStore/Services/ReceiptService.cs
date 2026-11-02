@@ -1,9 +1,14 @@
-﻿using ApiStore.Repositories;
+﻿using ApiStore.Controllers.DTOS;
+using ApiStore.Models;
+using ApiStore.Repositories;
 
 namespace ApiStore.Services;
 
 public interface IReceiptService
 {
+    public IEnumerable<Receipt> GetAll();
+    public Receipt Get(int id);
+    public Receipt Create(ReceiptRequestDTO request);
 }
 public class ReceiptService : IReceiptService
 {
@@ -11,5 +16,27 @@ public class ReceiptService : IReceiptService
     public ReceiptService(IReceiptRepository receiptRepository)
     {
         _receiptRepository = receiptRepository;
+    }
+
+    public IEnumerable<Receipt> GetAll()
+    {
+        return _receiptRepository.GetAll();
+    }
+
+    public Receipt Get(int id)
+    {
+        return _receiptRepository.Get(id);
+    }
+
+    public Receipt Create(ReceiptRequestDTO request)
+    {
+        var newReceipt = new Receipt
+        {
+            NameClient = request.NameClient,
+            DocClient = request.DocClient,
+            ReceiptDetails = new List<DetailReceipt>(),
+        };
+        _receiptRepository.Save(newReceipt);
+        return newReceipt;
     }
 }
