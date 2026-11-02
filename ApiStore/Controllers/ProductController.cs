@@ -1,4 +1,4 @@
-﻿using ApiStore.Dtos;
+﻿using ApiStore.Controllers.DTOS;
 using ApiStore.Models;
 using ApiStore.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -16,7 +16,6 @@ public class ProductController
     {
         _productService = productService;
     }
-
 
     [HttpGet("all/")]
     public IEnumerable<ProductResponseDto> GetAll()
@@ -43,20 +42,19 @@ public class ProductController
 
         if (ProductFind is null)
         {
-            return new ProductResponseDto //Mejorar el manejo de errores aquí
-            {
-                Id = 0,
-                Name = "No existe",
-                Price = 0,
-                Stock = 0
-            };
-
+            return null;
+            //new ProductResponseDto //Mejorar el manejo de errores aquí
+            //{
+            //    Id = 0,
+            //    Name = "No existe",
+            //    Price = 0,
+            //    Stock = 0
+            //};
         }
         return new ProductResponseDto
         {
             Id = ProductFind.Id,
             Name = ProductFind.Name,
-            Description = ProductFind.Description,
             Price = ProductFind.Price,
             Stock = ProductFind.Stock
         };
