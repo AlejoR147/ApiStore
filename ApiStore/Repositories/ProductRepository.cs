@@ -29,8 +29,8 @@ public class ProductRepository : IProductRepository
 
     public Product? Get(int id)
     {
-        var clients = GetAll();
+        var products = GetAll();
 
-        return clients.FirstOrDefault(c => c.Id == id);
+        return products.FirstOrDefault(p => p.Id == id);
     }
 }

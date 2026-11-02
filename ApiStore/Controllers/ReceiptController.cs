@@ -8,8 +8,16 @@ namespace ApiStore.Controllers;
 public class ReceiptController
 {
     private readonly IReceiptService _receiptService;
+
     public ReceiptController(IReceiptService receiptService)
     {
         _receiptService = receiptService;
     }
+
+
+
+
+
+
+
 }
