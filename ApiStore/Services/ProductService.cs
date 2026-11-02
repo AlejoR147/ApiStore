@@ -12,6 +12,7 @@ public interface IProductService
 {
     public IEnumerable<Product> GetAll();
     public Product Get(int id);
+    public Product Check(int id);
 
 }
 

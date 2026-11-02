@@ -1,4 +1,6 @@
-﻿using ApiStore.Services;
+﻿using ApiStore.Dtos;
+using ApiStore.Models;
+using ApiStore.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiStore.Controllers;
@@ -14,8 +16,13 @@ public class ReceiptController
         _receiptService = receiptService;
     }
 
+    [HttpPut]
+    public ReceiptResponseDto AddProduct(int id, DetailReceiptRequestDto request)
+    {
+        var receipts = _receiptService.Add();
 
 
+    }
 
 
 
