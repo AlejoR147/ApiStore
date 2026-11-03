@@ -102,3 +102,5 @@ Para mantener la integridad relacional en un entorno sin base de datos SQL:
 * El CSV de `Products` se actualiza cada vez que se reduce el stock.
 
 * Los detalles de los recibos se manejan serializando los datos, utilizando delimitadores secundarios (ej. `|` o `;`) si es necesario guardar relaciones 1:N en una sola línea, o manteniendo archivos separados (`receipts.csv` y `details.csv`) vinculados lógicamente por el `ReceiptId`.
+## Arquitectura del Sistema
+![Arquitectura del Sistema](./apistore.svg)
