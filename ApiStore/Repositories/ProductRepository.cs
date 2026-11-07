@@ -7,6 +7,7 @@ namespace ApiStore.Repositories;
 public interface IProductRepository
 {
     public IEnumerable<Product> GetAll();
+    public Product UpdateStock(int productId, int amount);
     public Product? Get(int id);
 }
 public class ProductRepository : IProductRepository
@@ -33,4 +34,22 @@ public class ProductRepository : IProductRepository
 
         return products.FirstOrDefault(p => p.Id == id);
     }
+
+    public Product UpdateStock(int productId, int amount)
+    {
+        var products = GetAll().ToList();
+;
+        var product = products.FirstOrDefault( p => p.Id == productId);
+        
+        product.Stock -= amount;
+
+        using var writer = new StreamWriter(_path); 
+        using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+        csv.WriteRecords(products);
+
+        return product;
+
+    }
+
+
 }

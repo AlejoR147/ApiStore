@@ -10,6 +10,7 @@ public interface IReceiptRepository
     public IEnumerable<Receipt> GetAll();
     public Receipt? Get(int id);
     public void Save(Receipt receipt);
+    public void SaveDetail(int id, DetailReceipt newDetail);
     public Receipt Update(Receipt receipt);
 }
 public class ReceiptRepository : IReceiptRepository
@@ -33,12 +34,12 @@ public class ReceiptRepository : IReceiptRepository
 
     public Receipt Get(int id)
     {
-        var client = GetAll().FirstOrDefault(r => r.Id == id);
-        if (client is null)
+        var receipt = GetAll().FirstOrDefault(r => r.Id == id);
+        if (receipt is null)
         {
             return null;
         }
-        return client;
+        return receipt;
     }
 
     public void Save(Receipt receipt)
@@ -64,6 +65,11 @@ public class ReceiptRepository : IReceiptRepository
         {
             writerCsv.WriteRecords(receipts);
         }
+    }
+
+    public void SaveDetail(int id, DetailReceipt newDetail)
+    {
+        //Pendiente
     }
 
     public Receipt Update(Receipt receipt)
