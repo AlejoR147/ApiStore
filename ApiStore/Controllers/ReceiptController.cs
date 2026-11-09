@@ -52,7 +52,7 @@ public class ReceiptController
         };
     }
 
-    [HttpPost()]
+    [HttpPost("open/")]
     public ReceiptResponseDTO OpenReceipt(ReceiptRequestDTO request)
     {
         var newReceipt = _receiptService.Create(request);
@@ -67,13 +67,13 @@ public class ReceiptController
             Total = newReceipt.Total
         };
     }
-    [HttpPost("details/create")]
+    [HttpPost("(id)/addDetail/")]
     public Receipt AddDetail(int id, DetailRequestDTO request)
     {
         return _receiptService.AddDetail(id, request);
     }
 
-    [HttpPost("close/")]
+    [HttpPost("(id)/close/")]
     public ReceiptResponseDTO CloseReceipt(int id) 
     {
         var receipt = _receiptService.Close(id);
