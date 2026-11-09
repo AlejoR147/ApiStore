@@ -5,12 +5,12 @@ using System.Globalization;
 
 namespace ApiStore.Repositories;
 
+
 public interface IReceiptRepository
 {
     public IEnumerable<Receipt> GetAll();
     public Receipt? Get(int id);
     public void Save(Receipt receipt);
-    public void SaveDetail(int id, DetailReceipt newDetail);
     public Receipt Update(Receipt receipt);
 }
 public class ReceiptRepository : IReceiptRepository
@@ -46,6 +46,15 @@ public class ReceiptRepository : IReceiptRepository
     {
         var exists = File.Exists(_path);
 
+        var receiptCsv = new ReceiptCSV
+        {
+            Id = receipt.Id,
+            // Convertimos la lista a string directamente aquí
+            ReceiptDetailsIds = receipt.ReceiptDetails != null && receipt.ReceiptDetails.Any()
+                ? string.Join("|", receipt.ReceiptDetails.Select(d => d.productId))
+                : string.Empty
+        };
+
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
             HasHeaderRecord = !exists
@@ -67,11 +76,6 @@ public class ReceiptRepository : IReceiptRepository
         }
     }
 
-    public void SaveDetail(int id, DetailReceipt newDetail)
-    {
-        //Pendiente
-    }
-
     public Receipt Update(Receipt receipt)
     {
         var receipts = GetAll();
@@ -82,4 +86,14 @@ public class ReceiptRepository : IReceiptRepository
 
         return receipt;
     }
+}
+internal class ReceiptCSV
+{
+    public int Id { get; set; } = new Random().Next();
+    public DateTime Date { get; set; } = DateTime.Now;
+    public string NameClient { get; set; }
+    public string DocClient { get; set; }
+    public bool Estado { get; set; } = true;
+    public string ReceiptDetailsId { get; set; }
+    public decimal Total { get; set; } = 0;
 }
