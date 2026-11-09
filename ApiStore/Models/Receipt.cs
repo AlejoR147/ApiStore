@@ -10,3 +10,15 @@ public class Receipt
     public List<DetailReceipt> ReceiptDetails { get; set; } = new();
     public decimal Total { get; set; } = 0;
 }
+
+
+public class RecieptCSV
+{
+    public int Id { get; set; } = new Random().Next();
+    public DateTime Date { get; set; } = DateTime.Now;
+    public string NameClient { get; set; }
+    public string DocClient { get; set; }
+    public bool Estado { get; set; } = true;
+    public string ReceiptDetailsId { get; set; }
+    public decimal Total { get; set; } = 0;
+}

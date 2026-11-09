@@ -1,3 +1,2 @@
-Id,Date,NameClient,DocClient,Estado,Total
-929659416,11/02/2026 12:01:35,jesus,131651616,True,0
-193551233,11/02/2026 12:01:49,diana,9898964648,False,0
+Id,Date,NameClient,DocClient,Estado,ReceiptDetailsId,Total
+317755536,11/08/2026 21:29:21,Ronan,64661655,False,898784426|1599690872,80000

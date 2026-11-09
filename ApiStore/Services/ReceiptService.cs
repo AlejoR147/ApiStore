@@ -1,8 +1,6 @@
 ﻿using ApiStore.Controllers.DTOS;
 using ApiStore.Models;
 using ApiStore.Repositories;
-using System.Numerics;
-using System.Runtime.CompilerServices;
 
 namespace ApiStore.Services;
 
@@ -12,27 +10,51 @@ public interface IReceiptService
     public Receipt Get(int id);
     public Receipt AddDetail(int id, DetailRequestDTO request);
     public Receipt Create(ReceiptRequestDTO request);
-    public Receipt UpdateReceipt(Receipt receipt, DetailReceipt newDetail);
     public Receipt Close(int id);
 }
 public class ReceiptService : IReceiptService
 {
     private readonly IReceiptRepository _receiptRepository;
-    private readonly IProductRepository _productRepository;
-    public ReceiptService(IReceiptRepository receiptRepository, IProductRepository productRepository)
+    private readonly IProductService _productService;
+    private readonly IDetailReceiptService _detailReceiptService;
+
+    public ReceiptService(IReceiptRepository receiptRepository, IProductService productService, IDetailReceiptService detailReceiptService)
     {
         _receiptRepository = receiptRepository;
-        _productRepository = productRepository;
+        _detailReceiptService = detailReceiptService;
+        _productService = productService;
     }
 
     public IEnumerable<Receipt> GetAll()
     {
-        return _receiptRepository.GetAll();
+        var receipts = _receiptRepository.GetAll();
+
+        var idReceipt = receipts.Select(r => r.ReceiptDetails.Select
+        (d => d.Id)).ToList();
+
+        var allDetails = _detailReceiptService.GetAll() ?? Enumerable.Empty<DetailReceipt>().Where(d => idReceipt.Any
+        (ids => ids.Contains(d.Id))).ToList();
+
+        receipts.ToList().ForEach(r =>
+        {
+            r.ReceiptDetails = allDetails.Where(d => r.ReceiptDetails.Any
+            (rd => rd.Id == d.Id)).ToList();
+        });
+
+        return receipts;
     }
 
     public Receipt Get(int id)
     {
-        return _receiptRepository.Get(id);
+        var receipt = _receiptRepository.Get(id);
+        
+        var idReceipt = receipt.ReceiptDetails.Select(d => d.Id).ToList();
+
+        var allDetails = (_detailReceiptService.GetAll() ?? Enumerable.Empty<DetailReceipt>()).Where
+            (d => idReceipt.Contains(d.Id)).ToList();
+        
+        receipt.ReceiptDetails = allDetails;
+        return receipt;
     }
 
     public Receipt Create(ReceiptRequestDTO request)
@@ -50,38 +72,38 @@ public class ReceiptService : IReceiptService
 
     public Receipt AddDetail(int id, DetailRequestDTO request)
     {
-        var receipt = _receiptRepository.Get(id);
-        var product = _productRepository.Get(request.productId);
+        var receipt = Get(id);
+        var product = _productService.Get(request.productId);
 
-        if (receipt == null) { throw new Exception("la factura no existe o se encuentra cerrada"); }
+        if (receipt.Estado == false) 
+        { throw new Exception("la factura se encuentra cerrada"); }
+        if (product.Stock < request.Amount) 
+        { throw new Exception("No hay stock suficiente"); }
 
-        if (product != null && product.Stock >= request.Amount)
-        {
-            var newDetail = new DetailReceipt { productId = request.productId, ReceiptId = id, Amount = request.Amount, UnitPrice = product.Price, Subtotal = (int)(product.Price * request.Amount) };
+        var newDetail = _detailReceiptService.Create(request, product);
+        _productService.UpdateStock(request.productId, request.Amount);
 
-
-            UpdateReceipt(receipt, newDetail);
-            //pendiente agregar a la carpeta de details
-            _receiptRepository.SaveDetail(id,newDetail);
-            _productRepository.UpdateStock(request.productId, request.Amount);
-        }
-
-        return receipt;
-
+        return UpdateReceipt(receipt, newDetail);
     }
     private Receipt UpdateReceipt(Receipt receipt, DetailReceipt newDetail)
     {
         receipt.ReceiptDetails = receipt.ReceiptDetails.Append(newDetail).ToList();
         receipt.Total = receipt.ReceiptDetails.Sum(d => d.Subtotal);
 
-        return receipt;
+        return _receiptRepository.Update(receipt);
     }
-
-
 
     public Receipt Close(int id)
     {
-        var receipt = _receiptRepository.Get(id);
+        var receipt = Get(id);
+        if (receipt.ReceiptDetails.Count == 0)
+        {
+            throw new Exception("No se puede cerrar la factura, no tiene detalles");
+        }
+        if (receipt.Estado == false)
+        {
+            throw new Exception("La factura ya se encuentra cerrada");
+        }
         receipt.Estado = false;
         return _receiptRepository.Update(receipt);
     }

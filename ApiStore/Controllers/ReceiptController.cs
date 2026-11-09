@@ -67,6 +67,12 @@ public class ReceiptController
             Total = newReceipt.Total
         };
     }
+    [HttpPost("details/create")]
+    public Receipt AddDetail(int id, DetailRequestDTO request)
+    {
+        return _receiptService.AddDetail(id, request);
+    }
+
     [HttpPost("close/")]
     public ReceiptResponseDTO CloseReceipt(int id) 
     {
