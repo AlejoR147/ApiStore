@@ -6,6 +6,7 @@ namespace ApiStore.Services;
 public interface IDetailReceiptService
 {
     public DetailReceipt Create(DetailRequestDTO request, Product product);
+    public IEnumerable<DetailReceipt> GetAll();
 }
 public class DetailReceiptService : IDetailReceiptService
 {
@@ -19,12 +20,18 @@ public class DetailReceiptService : IDetailReceiptService
     {
         var newDetail = new DetailReceipt
         {
-            productId = request.productId,
+            ProductId = request.productId,
+            Description = product.Description,
             Amount = request.Amount,
             UnitPrice = product.Price,
             Subtotal = (product.Price * request.Amount)
         };
         _detailReceiptRepository.Save(newDetail);
         return newDetail;
-    } 
+    }
+
+    public IEnumerable<DetailReceipt> GetAll()
+    {
+        return _detailReceiptRepository.GetAll();
+    }
 }

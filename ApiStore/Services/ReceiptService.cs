@@ -1,8 +1,6 @@
 ﻿using ApiStore.Controllers.DTOS;
 using ApiStore.Models;
 using ApiStore.Repositories;
-using System.Numerics;
-using System.Runtime.CompilerServices;
 
 namespace ApiStore.Services;
 
@@ -29,12 +27,34 @@ public class ReceiptService : IReceiptService
 
     public IEnumerable<Receipt> GetAll()
     {
-        return _receiptRepository.GetAll();
+        var receipts = _receiptRepository.GetAll();
+
+        var idReceipt = receipts.Select(r => r.ReceiptDetails.Select
+        (d => d.Id)).ToList();
+
+        var allDetails = _detailReceiptService.GetAll() ?? Enumerable.Empty<DetailReceipt>().Where(d => idReceipt.Any
+        (ids => ids.Contains(d.Id))).ToList();
+
+        receipts.ToList().ForEach(r =>
+        {
+            r.ReceiptDetails = allDetails.Where(d => r.ReceiptDetails.Any
+            (rd => rd.Id == d.Id)).ToList();
+        });
+
+        return receipts;
     }
 
     public Receipt Get(int id)
     {
-        return _receiptRepository.Get(id);
+        var receipt = _receiptRepository.Get(id);
+        
+        var idReceipt = receipt.ReceiptDetails.Select(d => d.Id).ToList();
+
+        var allDetails = (_detailReceiptService.GetAll() ?? Enumerable.Empty<DetailReceipt>()).Where
+            (d => idReceipt.Contains(d.Id)).ToList();
+        
+        receipt.ReceiptDetails = allDetails;
+        return receipt;
     }
 
     public Receipt Create(ReceiptRequestDTO request)
@@ -52,7 +72,7 @@ public class ReceiptService : IReceiptService
 
     public Receipt AddDetail(int id, DetailRequestDTO request)
     {
-        var receipt = _receiptRepository.Get(id);
+        var receipt = Get(id);
         var product = _productService.Get(request.productId);
 
         if (receipt.Estado == false) 
@@ -60,16 +80,10 @@ public class ReceiptService : IReceiptService
         if (product.Stock < request.Amount) 
         { throw new Exception("No hay stock suficiente"); }
 
-
         var newDetail = _detailReceiptService.Create(request, product);
-
-        UpdateReceipt(receipt, newDetail);
-         //pendiente agregar a la carpeta de details
-        _receiptRepository.SaveDetail(id,newDetail);
         _productService.UpdateStock(request.productId, request.Amount);
 
-
-        return receipt;
+        return UpdateReceipt(receipt, newDetail);
     }
     private Receipt UpdateReceipt(Receipt receipt, DetailReceipt newDetail)
     {
@@ -81,7 +95,7 @@ public class ReceiptService : IReceiptService
 
     public Receipt Close(int id)
     {
-        var receipt = _receiptRepository.Get(id);
+        var receipt = Get(id);
         if (receipt.ReceiptDetails.Count == 0)
         {
             throw new Exception("No se puede cerrar la factura, no tiene detalles");

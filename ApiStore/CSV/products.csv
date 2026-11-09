@@ -1,3 +1,20 @@
-﻿Id,Name,Description,Price,Stock
-12344456,Disco,,10000,3
-72123229,Album,,10000,10
+Id,Name,Description,Price,Stock
+12344456,Disco,,10000,0
+72123229,Album,,10000,5
+83749210,Guitarra Acustica Yamaha,Acustica clasica,450000,12
+83749211,Guitarra Electrica Fender,Electrica Stratocaster,1200000,4
+83749212,Bajo Electrico Ibanez,Bajo de 4 cuerdas,950000,7
+83749213,Bateria Pearl 5 Piezas,Bateria acustica,2500000,2
+83749214,Teclado Casio 61 Teclas,Teclado portatil,320000,15
+83749215,Piano Digital Roland,Piano de 88 teclas,3100000,3
+83749216,Microfono Shure SM58,Dinamico vocal,420000,20
+83749217,Microfono Condensador AKG,Condensador de estudio,650000,8
+83749218,Audifonos Audio-Technica,Cerrados de estudio,350000,25
+83749219,Monitores de Estudio KRK,Monitores activos 5",900000,10
+83749220,Interfaz de Audio Focusrite,Interfaz USB 2x2,550000,14
+83749221,Cable de Instrumento 3m,Cable jack 1/4,25000,50
+83749222,Cable XLR 5m,Cable microfono XLR,35000,40
+83749223,Paquete Puas Dunlop (12),Puas surtidas,18000,100
+83749224,Cuerdas Guitarra Electrica Ernie Ball,Calibre 10-46,30000,85
+83749225,Cuerdas Guitarra Acustica DAddario,Calibre 12-53,32000,70
+83749226,Cuerdas Bajo Electrico,Calibre 45-105,65000,30

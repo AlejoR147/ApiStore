@@ -6,6 +6,8 @@ using System.Globalization;
 namespace ApiStore.Repositories;
 public interface IDetailReceiptRepository
 {
+    public void Save(DetailReceipt detail);
+    public IEnumerable<DetailReceipt> GetAll();
 }
 public class DetailReceiptRepository : IDetailReceiptRepository
 {
@@ -26,17 +28,7 @@ public class DetailReceiptRepository : IDetailReceiptRepository
         return readerCsv.GetRecords<DetailReceipt>().ToList();
     }
 
-    public DetailReceipt Get(int id)
-    {
-        var receipt = GetAll().FirstOrDefault(r => r.productId == id);
-        if (receipt is null)
-        {
-            return null;
-        }
-        return receipt;
-    }
-
-    public void Save(Receipt receipt)
+    public void Save(DetailReceipt detail)
     {
         var exists = File.Exists(_path);
 
@@ -48,7 +40,7 @@ public class DetailReceiptRepository : IDetailReceiptRepository
         using (var writer = new StreamWriter(_path, append: true))
         using (var writerCsv = new CsvWriter(writer, config))
         {
-            writerCsv.WriteRecords(new[] { receipt });
+            writerCsv.WriteRecords(new[] { detail });
         }
     }
 }

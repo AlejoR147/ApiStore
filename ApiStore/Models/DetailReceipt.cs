@@ -2,10 +2,11 @@
 
 public class DetailReceipt
 {
-    public int productId { get; set; }
-    public int ReceiptId { get; set; }
+    public int Id{ get; set; } = new Random().Next();
+    public int ProductId { get; set; }
+    public string Description { get; set; }
     public int Amount { get; set; }
     public decimal UnitPrice { get; set; }
-    public int Subtotal { get; set; }
+    public decimal Subtotal { get; set; }
 }
 

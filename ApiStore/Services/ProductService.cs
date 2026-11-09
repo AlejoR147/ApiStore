@@ -12,7 +12,7 @@ public interface IProductService
 {
     public IEnumerable<Product> GetAll();
     public Product Get(int id);
-
+    public Product UpdateStock(int productId, int amount);
 }
 
 public class ProductService : IProductService
@@ -34,5 +34,9 @@ public class ProductService : IProductService
         return _productRepository.Get(id);
     }
 
-    
+    public Product UpdateStock(int productId, int amount)
+    {
+
+        return _productRepository.UpdateStock(productId, amount);
+    }
 }
